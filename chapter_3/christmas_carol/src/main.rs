@@ -1,13 +1,37 @@
 use std::io;
 
 fn main() {
+    let verse_num: i32 = parse_input();
+    sing_carol(verse_num);
+}
+
+fn parse_input() -> i32 {
     println!("To what verse would you like me to sing your Christmas carol? (1-12)");
 
-    let verse_num: i32 = parse_input();
+    let mut input = String::new();
+    loop {
+        io::stdin().read_line(&mut input).unwrap();
+        let valid_num = input.trim().parse::<i32>().is_ok();
 
+        if !valid_num {
+            println!("Please enter a number from 1 to 12.");
+            continue;
+        }
+
+        let parsed_num = input.trim().parse::<i32>().unwrap();
+
+        if parsed_num >= 1 && parsed_num <= 12 {
+            break parsed_num;
+        } else {
+            println!("Please enter a number from 1 to 12.");
+        }
+    }
+}
+
+fn sing_carol(verse_num: i32) {
     // Last number in a range expression in a for loop is exclusive
     for day in 1..verse_num + 1 {
-        if (day == 1) {
+        if day == 1 {
             println!("On the first day of Christmas, my true love gave to me...");
             println!("A partridge in a pear tree!\n");
             continue;
@@ -20,21 +44,6 @@ fn main() {
         }
 
         println!();
-    }
-}
-
-fn parse_input() -> i32 {
-    let mut input = String::new();
-    loop {
-        io::stdin().read_line(&mut input).unwrap();
-        let valid_num = input.parse::<i32>().is_ok();
-        let parsed_num = input.parse::<i32>().unwrap();
-
-        if valid_num && parsed_num >= 1 && parsed_num <= 12 {
-            break parsed_num;
-        } else {
-            println!("Please enter a number from 1 to 12.");
-        }
     }
 }
 
