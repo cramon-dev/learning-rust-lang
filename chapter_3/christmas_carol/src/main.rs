@@ -10,6 +10,9 @@ fn parse_input() -> i32 {
 
     let mut input = String::new();
     loop {
+        // Found this article on the rationale behind using unwrap when asking myself:
+        // Why use unwrap over explicitly defining Ok and Err callbacks?
+        // https://burntsushi.net/unwrap/
         io::stdin().read_line(&mut input).unwrap();
         let valid_num = input.trim().parse::<i32>().is_ok();
 
