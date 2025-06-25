@@ -4,6 +4,25 @@ fn main() {
     assign_new_value();
     clone_heap_data();
     clone_stack_data();
+    
+    let str1 = String::from("hello");
+    // Passing a variable to a function will move or copy that variable, so we can't reference "str1" after this line
+    takes_ownership(str1);
+    // str1.make_ascii_uppercase(); // INVALID - Trying to use "str1" will result in a compile-time error
+    
+    let x = 5;
+    makes_copy(x); // Passing a scalar value to a function will COPY the variable rather than move it
+    println!("{x}"); // Unlike "str1", "x" is still a valid ref because it was merely copied and not moved
+    
+    let s1 = gives_ownership(); // this function moves its return value into s1
+    let s2 = String::from("hello"); // s2 comes into scope
+    let s3 = takes_and_gives_back(s2); // "s2" is moved into this function, which moves its return value into "s3"
+    // println!("{}", s2); // INVALID - "s2" was moved into takes_and_gives_back
+    // As the function closes, s1 and s3 go out of scope and are dropped. s2 was moved, so nothing happens
+    
+    let str1 = String::from("hello"); // "str1" comes into scope
+    let (str2, len) = calculate_length(str1); // "str1" is moved into this function, which moves its return values into "str2" and "length" 
+    println!("The length of '{}' is {}.", str2, len); // "str2" and "len" will go out of scope as the function closes, and will be dropped
 }
 
 fn string_literal_scope() {
@@ -56,6 +75,30 @@ fn clone_stack_data() {
     println!("x = {x}, y = {y}");
 }
 
+fn takes_ownership(some_string: String) {
+    println!("{some_string}");
+}
+
+fn makes_copy(some_integer: i32) {
+    println!("{some_integer}");
+}
+
+fn gives_ownership() -> String {
+    let some_string = String::from("yours"); // some_string comes into scope...
+    some_string // some_string is returned and moved out to the calling function 
+}
+
+fn takes_and_gives_back(a_string: String) -> String {
+    // a_string comes into scope...
+    a_string // a_string is returned and moved out to the calling function
+}
+
+fn calculate_length(s: String) -> (String, usize) {
+    let length = s.len();
+    (s, length)
+}
+
+// ***** More notes on variables and moving *****
 // let s1 = String::from("hello");
 // let s2 = s1; // when assigning s1 to s2, String data is copied, meaning the pointer, length, and capacity are copied
 // Since both s1 and s2 point to the same data on heap this could potentially result in a "double free" error when both s1 and s2 go out of scope
